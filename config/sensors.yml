@@ -12,7 +12,7 @@ sensors.reception:
 # Получение последних значений датчиков потребного устройства
 sensors.last:
   path:     /{device}/last/{limit}/{timestamp}
- # methods:  [GET]
+  methods:  [GET]
   defaults: {_controller: 'Api\Controller\SensorController::last', limit: 10, timestamp:0 }
 
 # Получение структуры зарегистрированного устройства

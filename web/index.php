@@ -5,6 +5,7 @@
  * Date: 17.10.16
  * Time: 18:58
  */
+header("Access-Control-Allow-Origin: *");
 
 require_once __DIR__.'/../vendor/autoload.php';
 

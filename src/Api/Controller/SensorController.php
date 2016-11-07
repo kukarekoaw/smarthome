@@ -10,6 +10,7 @@ namespace Api\Controller;
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\DBAL\Connection;
 
 class SensorController
 {
@@ -26,7 +27,9 @@ class SensorController
 
         // insert reception data
         $postData = $request->request->all();
-        $res = $app['db']->insert("values_$deviceId", $postData);
+        $db = $app['db'];
+        /** @var  Connection $db */
+        $res = $db->insert("values_$deviceId", $postData);
         return  $app->json($res);
 
         //$sql = "SELECT * FROM g2krb_content WHERE id = ?";
@@ -52,10 +55,13 @@ class SensorController
                 as sub ORDER BY dt ASC";
         $rows = $app['db']->fetchAll($sql);
         $result = new \stdClass();
+
         foreach ($rows as $arr ) {
             $dt = (new \DateTime($arr["dt"]))->format("U000");
             foreach ($arr as $sensor => $value) {
-                $result->$sensor[] = array(intval($dt), floatval($value));
+                if (!is_array(@$result->$sensor))
+                    $result->$sensor = array();
+                array_push($result->$sensor, array(intval($dt), floatval($value)));
             }
         }
         //echo "<pre>";print_r($result);
