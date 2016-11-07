@@ -1,0 +1,7 @@
+api.base:
+  path:     /
+  defaults: { _controller: 'Api\Controller\ApiController::listAction' }
+
+api.sensors:
+  prefix: /sensors
+  resource: sensors.yml

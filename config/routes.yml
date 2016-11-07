@@ -1,0 +1,12 @@
+home:
+  path: /
+  defaults: { _controller: 'Api\Controller\AppController::homeAction' }
+
+notify:
+  path: /notify/{body}
+  defaults: { _controller: 'Api\Controller\MailController::notify' }
+
+api:
+  prefix: /api
+  resource: api.yml
+

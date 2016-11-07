@@ -1,0 +1,22 @@
+sensors.base:
+  path:     /
+  defaults: { _controller: 'Api\Controller\ApiController::listAction' }
+
+
+# Получение значения датчиков из внешних регистрирующих подсистем
+sensors.reception:
+  path:     /reception/{deviceId}
+  methods:  [POST]
+  defaults: { _controller: 'Api\Controller\SensorController::reception' }
+
+# Получение последних значений датчиков потребного устройства
+sensors.last:
+  path:     /{device}/last/{limit}/{timestamp}
+ # methods:  [GET]
+  defaults: {_controller: 'Api\Controller\SensorController::last', limit: 10, timestamp:0 }
+
+# Получение структуры зарегистрированного устройства
+sensors.struct:
+  path:     /{name}/struct
+ # methods:  [GET]
+  defaults: {_controller: 'Api\Controller\SensorController::struct' }
