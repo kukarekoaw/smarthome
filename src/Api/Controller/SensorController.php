@@ -47,24 +47,26 @@ class SensorController
      */
     public function last(Application $app, $device, $limit, $timestamp)
     {
-        //SELECT * FROM `values_rpi_shower` WHERE dt>STR_TO_DATE('2016-11-06 00:00:00', '%Y-%m-%d %H:%i:%s')
-        //SELECT * FROM `values_rpi_shower` WHERE dt>FROM_UNIXTIME(1478379600000/1000)
-
-        //rpi_shower
-        $sql = "SELECT * FROM (SELECT * FROM `values_$device` WHERE dt>FROM_UNIXTIME($timestamp) ORDER BY dt DESC LIMIT $limit) 
+        // Приведение timestamp к форматированной строке для сравнения в БД
+        $dt = (new \DateTime())->setTimestamp($timestamp/1000)->format("Y-m-d H:i:s");
+        // Получим актуальные данные из БД
+        $sql = "SELECT * FROM (SELECT * FROM `values_$device` WHERE dt>'$dt' ORDER BY dt DESC LIMIT $limit) 
                 as sub ORDER BY dt ASC";
         $rows = $app['db']->fetchAll($sql);
+        // Подготовим результирующий объект
         $result = new \stdClass();
+        //$result->debug=array();
 
         foreach ($rows as $arr ) {
-            $dt = (new \DateTime($arr["dt"]))->format("U000");
+            $dt = (new \DateTime($arr['dt']))->format("U000");
+            //$dt2 = (new \DateTime($arr['dt']))->getTimestamp()*1000;
+            //array_push($result->debug, array($arr["dt"],$dt));
             foreach ($arr as $sensor => $value) {
                 if (!is_array(@$result->$sensor))
                     $result->$sensor = array();
                 array_push($result->$sensor, array(intval($dt), floatval($value)));
             }
         }
-        //echo "<pre>";print_r($result);
         return  $app->json($result);
     }
 
